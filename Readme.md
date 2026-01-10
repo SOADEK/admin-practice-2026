@@ -1,16 +1,21 @@
 # My Sysadmin Practice
 ## 🚀 Full Stack Deployment
 
-This repo contains a complete sysadmin practice environment:
+## What's included
 
-- **Nginx** on port 8080
-- **PostgreSQL** (custom) on port 5433
-- **MySQL** on port 3306
-- **Zabbix** monitoring on port 80
+- **Web Server**: Nginx on port `8080`
+- **Databases**: 
+  - PostgreSQL (custom) on port `5433`
+  - MySQL on port `3306`
+- **Monitoring**: Zabbix Server + Web UI on port `80`
+- **Custom Checks**: Script-based triggers (e.g., file status monitoring)
+- **Automation**: One-click deployment via `setup.sh`
+
 
 ### How to deploy
 ```bash
-git clone https://github.com/ваш-логин/admin-practice-2026.git
+git clone -b experiments https://github.com/soadek/admin-practice-2026.git
 cd admin-practice-2026
+chmod +x setup.sh
 ./setup.sh
 
