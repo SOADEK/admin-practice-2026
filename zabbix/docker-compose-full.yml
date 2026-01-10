@@ -1,0 +1,78 @@
+services:
+  # === ВЕБ-СЕРВЕР ===
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+    container_name: my-nginx
+    restart: unless-stopped
+
+  # === ТВОЙ POSTGRESQL (на порту 5433) ===
+  my-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: 123456
+    ports:
+      - "5433:5432"   # внешний:внутренний
+    container_name: my-postgres
+    restart: unless-stopped
+
+  # === MYSQL ===
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+    ports:
+      - "3306:3306"
+    container_name: my-mysql
+    restart: unless-stopped
+
+  # === ZABBIX: БАЗА ДАННЫХ ===
+  zabbix-postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix
+      POSTGRES_DB: zabbix
+    volumes:
+      - zabbix_db_data:/var/lib/postgresql/data
+    container_name: zabbix-postgres
+    restart: unless-stopped
+
+  # === ZABBIX SERVER ===
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:ubuntu-7.0-latest
+    ports:
+      - "10051:10051"
+    environment:
+      DB_SERVER_HOST: zabbix-postgres
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix
+      POSTGRES_DB: zabbix
+      ZBX_SERVER_NAME: "My Zabbix"
+      ZBX_STARTCONNECTORS: "5"
+    depends_on:
+      - zabbix-postgres
+    container_name: zabbix-server
+    restart: unless-stopped
+
+  # === ZABBIX WEB UI ===
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:ubuntu-7.0-latest
+    ports:
+      - "80:8080"   # теперь Zabbix на порту 80!
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      DB_SERVER_HOST: zabbix-postgres
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbix
+      POSTGRES_DB: zabbix
+      ZBX_SERVER_NAME: "My Zabbix"
+    depends_on:
+      - zabbix-server
+      - zabbix-postgres
+    container_name: zabbix-web
+    restart: unless-stopped
+
+volumes:
+  zabbix_db_data:
