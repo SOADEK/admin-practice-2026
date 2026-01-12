@@ -1,5 +1,3 @@
-# My Sysadmin Practice
-## 🚀 Full Stack Deployment
 
 ## What's included
 
@@ -8,7 +6,6 @@
   - PostgreSQL (custom) on port `5433`
   - MySQL on port `3306`
 - **Monitoring**: Zabbix Server + Web UI on port `80`
-- **Custom Checks**: Script-based triggers (e.g., file status monitoring)
 - **Automation**: One-click deployment via `setup.sh`
 
 
